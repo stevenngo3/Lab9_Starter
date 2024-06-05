@@ -69,26 +69,34 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="consoleLog">Console Log</button>
+      <button id="consoleError">Console Error</button>
+      <button id="consoleCount">Console Count</button>
+      <button id="consoleWarn">Console Warn</button>
+      <button id="consoleAssert">Console Assert</button>
+      <button id="consoleClear">Console Clear</button>
+      <button id="consoleDir">Console Dir</button>
+      <button id="consoleDirxml">Console dirxml</button>
+      <button id="consoleGroupStart">Console Group Start</button>
+      <button id="consoleGroupEnd">Console Group End</button>
+      <button id="consoleTable">Console Table</button>
+      <button id="startTimer">Start Timer</button>
+      <button id="endTimer">End Timer</button>
+      <button id="consoleTrace">Console Trace</button>
+      <button id="globalError">Trigger a Global Error</button>
     </section>
   </main>
 
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
-    let form = document.querySelector('form');
+    window.TrackJS && TrackJS.install({ 
+      token: "4f8a9862ca344a36b7c321e43ab9503a"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    /*let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
       let output = document.querySelector('output');
@@ -98,10 +106,87 @@
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));*/
 
     // Start your code here
     // You may move this JS to another file if you wish
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "ValidationError";
+      }
+    }
+    let form = document.querySelector('form');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let output = document.querySelector('output');
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      //output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if (firstNum == "" || secondNum == "") {
+          throw new ValidationError("One of the numbers are blank");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        output.innerHTML = "Error: " + err.message;
+        console.error(err);
+      } finally {
+        console.log("Input has been submitted");
+      }
+    });
+    document.getElementById("consoleLog").addEventListener("click", (event) => {
+      console.log("Console Log Demo");
+    });
+    document.getElementById("consoleError").addEventListener("click", (event) => {
+      console.error("Console Error Demo");
+    });
+    document.getElementById("consoleCount").addEventListener("click", (event) => {
+      console.count("Count Button");
+    });
+    document.getElementById("consoleWarn").addEventListener("click", (event) => {
+      console.warn("Console Warn Button");
+    });
+    document.getElementById("consoleAssert").addEventListener("click", (event) => {
+      console.assert(2 == 3, "Console assert message");
+    });
+    document.getElementById("consoleClear").addEventListener("click", (event) => {
+      console.clear();
+    });
+    document.getElementById("consoleDir").addEventListener("click", (event) => {
+      console.dir(document.head);
+    });
+    document.getElementById("consoleDirxml").addEventListener("click", (event) => {
+      console.dir(document);
+    });
+    document.getElementById("consoleGroupStart").addEventListener("click", (event) => {
+      console.group();
+    });
+    document.getElementById("consoleGroupEnd").addEventListener("click", (event) => {
+      console.groupEnd();
+    });
+    document.getElementById("consoleTable").addEventListener("click", (event) => {
+      console.table([{animal:"dog", age: 1}, {animal: "cat", age: 2}, {animal: "cow", age: 3}]);
+    });
+    document.getElementById("startTimer").addEventListener("click", (event) => {
+      console.time("Timer Button");
+    });
+    document.getElementById("endTimer").addEventListener("click", (event) => {
+      console.timeEnd("Timer Button");
+    });
+    document.getElementById("consoleTrace").addEventListener("click", (event) => {
+      console.trace();
+    });
+    document.getElementById("globalError").addEventListener("click", (event) => {
+      fakeFunction();
+    });
+
+    window.onerror = function(event, source, lineno, colno, error) {
+      console.log("Global error: " + event);
+      console.log("Source: " + source);
+      TrackJS.track('Testing TrackJS!');
+    }
   </script>
 </body>
 
